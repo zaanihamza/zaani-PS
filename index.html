@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Command Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+        #container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #0078d7;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #e8f0fe;
+            border-radius: 4px;
+        }
+        .cli-container {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        #output {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            font-family: "Courier New", Courier, monospace;
+            border-radius: 4px;
+        }
+        .command-details {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>PowerShell Command Tool</h1>
+        <input type="text" id="searchBox" placeholder="Enter a keyword" onkeyup="searchCommands()">
+        <button onclick="searchCommands()">Search</button>
+        <ul id="results"></ul>
+    </div>
+
+    <script>
+        // Initialize the database with detailed PowerShell command information
+        function initializeDatabase() {
+            const initialData = [
+                {
+                    "Name": "Get-Process",
+                    "Syntax": "Get-Process [[-Name] <String[]>] [-ComputerName <String[]>] [-FileVersionInfo] [-Module] [-Priority]",
+                    "Parameters": "Name: Specifies the processes by name.\nComputerName: Specifies the computer on which the process runs.",
+                    "Description": "Gets the processes that are running on a local or remote computer."
+                },
+                {
+                    "Name": "Get-Service",
+                    "Syntax": "Get-Service [[-Name] <String[]>] [-ComputerName <String[]>] [-DependentServices] [-RequiredServices]",
+                    "Parameters": "Name: Specifies the service names.\nComputerName: Specifies the computer on which the service runs.",
+                    "Description": "Gets the status of services on a local or remote computer."
+                },
+                {
+                    "Name": "Set-ExecutionPolicy",
+                    "Syntax": "Set-ExecutionPolicy [-ExecutionPolicy] <ExecutionPolicy> [-Scope <ExecutionPolicyScope>] [-Force] [-WhatIf]",
+                    "Parameters": "ExecutionPolicy: Sets the execution policy.\nScope: Defines where to apply the policy.",
+                    "Description": "Changes the user preference for the PowerShell script execution policy."
+                }
+            ];
+
+            if (!localStorage.getItem('powershellCommands')) {
+                localStorage.setItem('powershellCommands', JSON.stringify(initialData));
+            }
+        }
+
+        function fetchCommands() {
+            const data = localStorage.getItem('powershellCommands');
+            if (data) {
+                return JSON.parse(data);
+            } else {
+                console.error('No data found in localStorage.');
+                return [];
+            }
+        }
+
+        function searchCommands() {
+            const searchKeyword = document.getElementById('searchBox').value.trim().toLowerCase();
+            const resultsList = document.getElementById('results');
+            resultsList.innerHTML = ''; // Clear previous results
+
+            const commands = fetchCommands();
+
+            if (commands.length === 0) {
+                resultsList.innerHTML = '<li>No data available.</li>';
+                return;
+            }
+
+            // Filter commands by the search keyword
+            const filteredCommands = commands.filter(command => 
+                command.Name.toLowerCase().includes(searchKeyword)
+            );
+
+            if (filteredCommands.length > 0) {
+                filteredCommands.forEach(command => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>Name:</strong> ${command.Name}<br>
+                        <strong>Syntax:</strong> <code>${command.Syntax}</code><br>
+                        <strong>Parameters:</strong> <pre>${command.Parameters}</pre><br>
+                        <strong>Description:</strong> ${command.Description}
+                    `;
+                    resultsList.appendChild(listItem);
+                });
+            } else {
+                const noResultsItem = document.createElement('li');
+                noResultsItem.textContent = 'No commands found.';
+                resultsList.appendChild(noResultsItem);
+            }
+        }
+
+        // Initialize the "database" when the page loads
+        window.onload = initializeDatabase;
+    </script>
+</body>
+</html>
