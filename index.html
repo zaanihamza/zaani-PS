@@ -216,7 +216,49 @@
             font-family: 'Courier New', Courier, monospace;
             animation: moveSignature 4s infinite ease-in-out;
         }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
 
+            .navbar nav {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            #container {
+                margin-left: 0;
+                margin-top: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-title {
+                font-size: 18px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                font-size: 12px;
+            }
+
+            button {
+                font-size: 12px;
+            }
+
+            footer {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
