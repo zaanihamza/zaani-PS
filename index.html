@@ -5,158 +5,725 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PowerShell Command Tool</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+        /* General Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            animation: backgroundAnimation 5s infinite alternate;
+        }
+
+        /* Modern Gradient Colors */
+        .gradient-bg {
+            background: linear-gradient(90deg, #00796b, #004d40);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-title {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .navbar nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            color: rgb(1, 1, 1);
+            width: 240px;
+            height: calc(100% - 80px);
+            background: linear-gradient(180deg, #00796b, #004d40);
+            padding: 20px;
+            box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+        }
+
+        .sidebar li {
+            margin: 20px 0;
+        }
+
+        .sidebar a {
+            color: #000000; 
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        #container {
+            margin-left: 260px;
+            margin-top: 100px;
+            padding: 20px;
+        }
+
         h1 {
             text-align: center;
-            color: #444;
+            color: #004d40;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
-        #container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
+
         input[type="text"] {
-            width: 80%;
-            padding: 10px;
+            width: calc(100% - 150px);
+            max-width: 600px;
+            padding: 12px;
             margin-right: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            font-size: 16px;
         }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #004d40;
+            box-shadow: 0 0 4px rgba(0, 77, 64, 0.6);
+        }
+
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            background-color: #0078d7;
-            color: #fff;
-            border-radius: 4px;
+            background: linear-gradient(90deg, #004d40, #00796b);
+            color: white;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
         }
+
         button:hover {
-            background-color: #005a9e;
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #00796b, #004d40);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         ul {
             list-style-type: none;
             padding: 0;
         }
+
         li {
             margin: 10px 0;
             padding: 15px;
-            background-color: #e8f0fe;
-            border-radius: 4px;
-        }
-        .cli-container {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
+            background-color: #fff;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        #output {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #333;
-            color: #fff;
-            font-family: "Courier New", Courier, monospace;
-            border-radius: 4px;
+
+        footer {
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #004d40, #00796b);
         }
-        .command-details {
-            margin-top: 10px;
-            font-size: 0.9em;
+
+        .tab-content {
+            display: none;
         }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes moveSignature {
+            0% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+            100% {
+                transform: translateX(-10px);
+            }
+        }
+
+        .signature {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00796b;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            animation: moveSignature 4s infinite ease-in-out;
+        }
+
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>PowerShell Command Tool</h1>
-        <input type="text" id="searchBox" placeholder="Enter a keyword" onkeyup="searchCommands()">
-        <button onclick="searchCommands()">Search</button>
-        <ul id="results"></ul>
+    <!-- Navigation Bar -->
+    <div class="navbar gradient-bg">
+        <div class="navbar-title">PowerShell Command Tool</div>
+        <nav>
+            <a href="#" onclick="showTab('home')">Home</a>
+            <a href="#" onclick="showTab('categories-page')">Categories</a>
+            <a href="#" onclick="showTab('about-tool')">About Tool</a>
+        </nav>
     </div>
 
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#" onclick="showTab('home')">Home</a></li>
+            <li><a href="#" onclick="showTab('categories-page')">Categories</a></li>
+            <li><a href="#" onclick="showTab('about-tool')">About Tool</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div id="container">
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <h1>Welcome to the PowerShell Command Tool</h1>
+            <p>Use the navigation to explore categories or search for commands directly.</p>
+            
+            <!-- Search Section -->
+            <div>
+                <!-- Search by Name -->
+                <label for="nameSearch">Search by Name:</label>
+                <input type="text" id="nameSearch" placeholder="Enter a keyword for Name" onkeyup="displaySearchResults()"
+                    style="width: 80%; padding: 10px; margin-top: 20px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+                
+                <!-- Search by Description -->
+                <label for="descriptionSearch" style="margin-left: 20px;">Search by Description:</label>
+                <input type="text" id="descriptionSearch" placeholder="Enter a keyword for Description" onkeyup="displaySearchResults()"
+                    style="width: 80%; padding: 10px; margin-top: 20px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+                
+                <button onclick="displaySearchResults()" 
+                    style="padding: 10px 20px; margin-left: 10px; border-radius: 5px; border: none; background-color: #00796b; color: white; cursor: pointer;">Search</button>
+            </div>
+            
+            <!-- Search Results -->
+            <ul id="results" style="margin-top: 20px; list-style: none; padding-left: 0;"></ul>
+        </div>
+
+        <!-- Categories Page -->
+        <div id="categories-page" class="tab-content">
+            <h1>Command Categories</h1>
+            <div id="category-buttons" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+        </div>
+
+        <!-- Commands in Selected Category -->
+        <div id="commands-page" class="tab-content">
+            <h1 id="commands-page-title">Commands in Category</h1>
+            <ul id="commands-list"></ul>
+            <button onclick="showTab('categories-page')" style="margin-top: 20px;">Back to Categories</button>
+        </div>
+
+        <!-- About Tool Tab -->
+        <div id="about-tool" class="tab-content">
+            <h1>About This Tool</h1>
+            <p>This tool provides a user-friendly way to search for PowerShell commands organized by categories.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gradient-bg">
+        <div class="signature">Zaani Hamza</div>
+        &copy; 2024 PowerShell Tool. All Rights Reserved.
+    </footer>
+
     <script>
-        // Initialize the database with detailed PowerShell command information
-        function initializeDatabase() {
-            const initialData = [
-                {
-                    "Name": "Get-Process",
-                    "Syntax": "Get-Process [[-Name] <String[]>] [-ComputerName <String[]>] [-FileVersionInfo] [-Module] [-Priority]",
-                    "Parameters": "Name: Specifies the processes by name.\nComputerName: Specifies the computer on which the process runs.",
-                    "Description": "Gets the processes that are running on a local or remote computer."
-                },
-                {
-                    "Name": "Get-Service",
-                    "Syntax": "Get-Service [[-Name] <String[]>] [-ComputerName <String[]>] [-DependentServices] [-RequiredServices]",
-                    "Parameters": "Name: Specifies the service names.\nComputerName: Specifies the computer on which the service runs.",
-                    "Description": "Gets the status of services on a local or remote computer."
-                },
-                {
-                    "Name": "Set-ExecutionPolicy",
-                    "Syntax": "Set-ExecutionPolicy [-ExecutionPolicy] <ExecutionPolicy> [-Scope <ExecutionPolicyScope>] [-Force] [-WhatIf]",
-                    "Parameters": "ExecutionPolicy: Sets the execution policy.\nScope: Defines where to apply the policy.",
-                    "Description": "Changes the user preference for the PowerShell script execution policy."
-                }
-            ];
-
-            if (!localStorage.getItem('powershellCommands')) {
-                localStorage.setItem('powershellCommands', JSON.stringify(initialData));
+        // Sample Data
+        const initialData =[
+    {
+        "Category": "FileSystem",
+        "Commands": [
+            {
+                "Name": "Get-ChildItem",
+                "Syntax": "Get-ChildItem [-Path] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Path",
+                        "Description": "Specifies the path to the location."
+                    }
+                ],
+                "Description": "Gets the items and child items in one or more specified locations.",
+                "Log": "Executing Get-ChildItem with Path parameter."
+            },
+            {
+                "Name": "Copy-Item",
+                "Syntax": "Copy-Item [-Path] <String[]> [-Destination] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Path",
+                        "Description": "Specifies the items to copy."
+                    },
+                    {
+                        "Name": "Destination",
+                        "Description": "Specifies the destination path."
+                    }
+                ],
+                "Description": "Copies an item from one location to another.",
+                "Log": "Executing Copy-Item with Path and Destination parameters."
+            },
+            {
+                "Name": "Move-Item",
+                "Syntax": "Move-Item [-Path] <String[]> [-Destination] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Path",
+                        "Description": "Specifies the path to the items to move."
+                    },
+                    {
+                        "Name": "Destination",
+                        "Description": "Specifies the destination path."
+                    }
+                ],
+                "Description": "Moves an item from one location to another.",
+                "Log": "Executing Move-Item with Path and Destination parameters."
+            },
+            {
+                "Name": "New-Item",
+                "Syntax": "New-Item [-Path] <String> [-ItemType <String>]",
+                "Parameters": [
+                    {
+                        "Name": "Path",
+                        "Description": "Specifies the path where the new item is created."
+                    },
+                    {
+                        "Name": "ItemType",
+                        "Description": "Specifies the type of item to create (e.g., File, Directory)."
+                    }
+                ],
+                "Description": "Creates a new file, directory, or other type of item.",
+                "Log": "Executing New-Item with Path and ItemType parameters."
+            },
+            {
+                "Name": "Rename-Item",
+                "Syntax": "Rename-Item [-Path] <String> [-NewName] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Path",
+                        "Description": "Specifies the path to the item to rename."
+                    },
+                    {
+                        "Name": "NewName",
+                        "Description": "Specifies the new name of the item."
+                    }
+                ],
+                "Description": "Renames an item in a specified location.",
+                "Log": "Executing Rename-Item with Path and NewName parameters."
             }
-        }
-
-        function fetchCommands() {
-            const data = localStorage.getItem('powershellCommands');
-            if (data) {
-                return JSON.parse(data);
-            } else {
-                console.error('No data found in localStorage.');
-                return [];
+        ]
+    },
+    {
+        "Category": "Processes",
+        "Commands": [
+            {
+                "Name": "Get-Process",
+                "Syntax": "Get-Process [-Name] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the processes to get."
+                    }
+                ],
+                "Description": "Gets the processes that are running on the local computer or a remote computer.",
+                "Log": "Executing Get-Process with Name parameter."
+            },
+            {
+                "Name": "Start-Process",
+                "Syntax": "Start-Process [-FilePath] <String>",
+                "Parameters": [
+                    {
+                        "Name": "FilePath",
+                        "Description": "Specifies the file to start."
+                    }
+                ],
+                "Description": "Starts a process on the local computer.",
+                "Log": "Executing Start-Process with FilePath parameter."
+            },
+            {
+                "Name": "Stop-Process",
+                "Syntax": "Stop-Process [-Id] <Int32[]>",
+                "Parameters": [
+                    {
+                        "Name": "Id",
+                        "Description": "Specifies the process IDs of the processes to stop."
+                    }
+                ],
+                "Description": "Stops one or more running processes.",
+                "Log": "Executing Stop-Process with Id parameter."
+            },
+            {
+                "Name": "Wait-Process",
+                "Syntax": "Wait-Process [-Name] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the name of the process to wait for."
+                    }
+                ],
+                "Description": "Waits for the processes to be stopped before accepting more input."
+            },
+            {
+                "Name": "Debug-Process",
+                "Syntax": "Debug-Process [-Id] <Int32[]>",
+                "Parameters": [
+                    {
+                        "Name": "Id",
+                        "Description": "Specifies the process ID to debug."
+                    }
+                ],
+                "Description": "Debugs a process running on the local computer.",
+                "Log": "Executing Debug-Process with Id parameter."
             }
-        }
-
-        function searchCommands() {
-            const searchKeyword = document.getElementById('searchBox').value.trim().toLowerCase();
-            const resultsList = document.getElementById('results');
-            resultsList.innerHTML = ''; // Clear previous results
-
-            const commands = fetchCommands();
-
-            if (commands.length === 0) {
-                resultsList.innerHTML = '<li>No data available.</li>';
-                return;
+        ]
+    },
+    {
+        "Category": "Services",
+        "Commands": [
+            {
+                "Name": "Get-Service",
+                "Syntax": "Get-Service [-Name] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the services to get."
+                    }
+                ],
+                "Description": "Gets the services on a local or remote computer.",
+                "Log": "Executing Get-Service with Name parameter."
+            },
+            {
+                "Name": "Start-Service",
+                "Syntax": "Start-Service [-Name] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the services to start."
+                    }
+                ],
+                "Description": "Starts one or more stopped services.",
+                "Log": "Executing Start-Service with Name parameter."
+            },
+            {
+                "Name": "Stop-Service",
+                "Syntax": "Stop-Service [-Name] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the services to stop."
+                    }
+                ],
+                "Description": "Stops one or more running services.",
+                "Log": "Executing Stop-Service with Name parameter."
+            },
+            {
+                "Name": "Restart-Service",
+                "Syntax": "Restart-Service [-Name] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the services to restart."
+                    }
+                ],
+                "Description": "Stops and then starts one or more services."
+            },
+            {
+                "Name": "Set-Service",
+                "Syntax": "Set-Service [-Name] <String[]> -StartupType <String>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the services to configure."
+                    },
+                    {
+                        "Name": "StartupType",
+                        "Description": "Specifies the startup type for the service."
+                    }
+                ],
+                "Description": "Changes the properties of a service."
             }
+        ]
+    },
+    {
+        "Category": "Networking",
+        "Commands": [
+            {
+                "Name": "Test-Connection",
+                "Syntax": "Test-Connection [-ComputerName] <String[]>",
+                "Parameters": [
+                    {
+                        "Name": "ComputerName",
+                        "Description": "Specifies the computers to test connectivity with."
+                    }
+                ],
+                "Description": "Tests the network connection to one or more computers.",
+                "Log": "Executing Test-Connection with ComputerName parameter."
+            },
+            {
+                "Name": "Get-NetIPAddress",
+                "Syntax": "Get-NetIPAddress [-InterfaceAlias] <String>",
+                "Parameters": [
+                    {
+                        "Name": "InterfaceAlias",
+                        "Description": "Specifies the network interface."
+                    }
+                ],
+                "Description": "Gets the IP address configuration.",
+                "Log": "Executing Get-NetIPAddress with InterfaceAlias parameter."
+            },
+            {
+                "Name": "New-NetIPAddress",
+                "Syntax": "New-NetIPAddress [-IPAddress] <String> [-InterfaceAlias] <String>",
+                "Parameters": [
+                    {
+                        "Name": "IPAddress",
+                        "Description": "Specifies the IP address to set."
+                    },
+                    {
+                        "Name": "InterfaceAlias",
+                        "Description": "Specifies the network interface."
+                    }
+                ],
+                "Description": "Creates and configures a new IP address.",
+                "Log": "Executing New-NetIPAddress with IPAddress and InterfaceAlias parameters."
+            }
+        ]
+    },
+    {
+        "Category": "Users",
+        "Commands": [
+            {
+                "Name": "Get-LocalUser",
+                "Syntax": "Get-LocalUser [-Name] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the name of the local user to retrieve."
+                    }
+                ],
+                "Description": "Gets information about local user accounts.",
+                "Log": "Executing Get-LocalUser with Name parameter."
+            },
+            {
+                "Name": "New-LocalUser",
+                "Syntax": "New-LocalUser [-Name] <String> [-Password] <SecureString>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the name of the new local user."
+                    },
+                    {
+                        "Name": "Password",
+                        "Description": "Specifies the password for the new user."
+                    }
+                ],
+                "Description": "Creates a new local user account.",
+                "Log": "Executing New-LocalUser with Name and Password parameters."
+            },
+            {
+                "Name": "Remove-LocalUser",
+                "Syntax": "Remove-LocalUser [-Name] <String>",
+                "Parameters": [
+                    {
+                        "Name": "Name",
+                        "Description": "Specifies the name of the local user to remove."
+                    }
+                ],
+                "Description": "Deletes a local user account.",
+                "Log": "Executing Remove-LocalUser with Name parameter."
+            }
+        ]
+    }
+]
 
-            // Filter commands by the search keyword
-            const filteredCommands = commands.filter(command => 
-                command.Name.toLowerCase().includes(searchKeyword)
-            );
 
-            if (filteredCommands.length > 0) {
-                filteredCommands.forEach(command => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <strong>Name:</strong> ${command.Name}<br>
-                        <strong>Syntax:</strong> <code>${command.Syntax}</code><br>
-                        <strong>Parameters:</strong> <pre>${command.Parameters}</pre><br>
-                        <strong>Description:</strong> ${command.Description}
-                    `;
-                    resultsList.appendChild(listItem);
+
+        // Function to get search results for Name or Description
+        function searchCommandsByKeyword(keyword, searchField) {
+            const results = [];
+            keyword = keyword.toLowerCase();
+
+            initialData.forEach(category => {
+                category.Commands.forEach(command => {
+                    if (searchField === 'name' && command.Name.toLowerCase().includes(keyword)) {
+                        results.push({
+                            Category: category.Category,
+                            ...command
+                        });
+                    } 
+                    else if (searchField === 'description' && command.Description.toLowerCase().includes(keyword)) {
+                        results.push({
+                            Category: category.Category,
+                            ...command
+                        });
+                    }
                 });
+            });
+
+            return results;
+        }
+
+        // Function to display search results
+        function displaySearchResults() {
+            const nameKeyword = document.getElementById('nameSearch').value;
+            const descriptionKeyword = document.getElementById('descriptionSearch').value;
+
+            let results = [];
+
+            // Search by Name
+            if (nameKeyword) {
+                results = results.concat(searchCommandsByKeyword(nameKeyword, 'name'));
+            }
+
+            // Search by Description
+            if (descriptionKeyword) {
+                results = results.concat(searchCommandsByKeyword(descriptionKeyword, 'description'));
+            }
+
+            const resultsList = document.getElementById('results');
+            resultsList.innerHTML = '';
+
+            if (results.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No results found.';
+                resultsList.appendChild(li);
             } else {
-                const noResultsItem = document.createElement('li');
-                noResultsItem.textContent = 'No commands found.';
-                resultsList.appendChild(noResultsItem);
+                results.forEach(result => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <strong>${result.Name}</strong><br>
+                        <em>Syntax:</em> ${result.Syntax}<br>
+                        <em>Description:</em> ${result.Description}<br>
+                        <em>Log:</em> ${result.Log}<br>
+                        <em>Category:</em> ${result.Category}
+                    `;
+                    resultsList.appendChild(li);
+                });
             }
         }
 
-        // Initialize the "database" when the page loads
-        window.onload = initializeDatabase;
+        // Categories Page and Category Buttons
+        function populateCategoriesPage() {
+            const categoryButtons = document.getElementById('category-buttons');
+            categoryButtons.innerHTML = '';
+
+            initialData.forEach(category => {
+                const button = document.createElement('button');
+                button.textContent = category.Category;
+                button.onclick = () => showCommandsInCategory(category.Category);
+                button.style.padding = '10px';
+                button.style.borderRadius = '5px';
+                button.style.border = '1px solid #004d40';
+                button.style.background = '#00796b';
+                button.style.color = 'white';
+                button.style.cursor = 'pointer';
+                categoryButtons.appendChild(button);
+            });
+        }
+
+        // Display Commands of a Category
+        function showCommandsInCategory(categoryName) {
+            const category = initialData.find(c => c.Category === categoryName);
+            if (!category) return;
+
+            document.getElementById('commands-page-title').textContent = `Commands in ${categoryName}`;
+            const commandsList = document.getElementById('commands-list');
+            commandsList.innerHTML = '';
+
+            category.Commands.forEach(command => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${command.Name}</strong><br>
+                    <em>Syntax:</em> ${command.Syntax}<br>
+                    <em>Description:</em> ${command.Description}<br>
+                    <em>Log:</em> ${command.Log}
+                `;
+                commandsList.appendChild(li);
+            });
+
+            showTab('commands-page');
+        }
+
+        // Show Specific Tab
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Initialize Categories Page on Window Load
+        window.onload = () => {
+            populateCategoriesPage();
+        };
     </script>
 </body>
+
+
+
+
+
+
 </html>
